@@ -57,5 +57,5 @@ public class PhaedraExampleOptionProvider {
 	public boolean isSslEnabled() {
 		return sslEnabled;
 	}
-
+}
 ```
