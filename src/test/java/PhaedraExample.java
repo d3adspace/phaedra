@@ -39,5 +39,9 @@ public class PhaedraExample {
 		String appName = provider.getAppName();
 		List<String> hosts = provider.getHosts();
 		boolean useSSL = provider.isSslEnabled();
+		
+		System.out.println("AppName: " + appName);
+		System.out.println("Hostlist: " + hosts);
+		System.out.println("SSL enabled: " + useSSL);
 	}
 }

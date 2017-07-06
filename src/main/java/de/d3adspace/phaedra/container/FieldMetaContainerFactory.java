@@ -19,36 +19,26 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.d3adspace.phaedra;
+package de.d3adspace.phaedra.container;
 
-import de.d3adspace.phaedra.parser.CommandLineParser;
-import de.d3adspace.phaedra.parser.CommandLineParserFactory;
-import java.util.Arrays;
+import de.d3adspace.phaedra.SimplePhaedra;
+import de.d3adspace.phaedra.extractor.FieldMetaExtractor;
+import de.d3adspace.phaedra.extractor.FieldMetaExtractorFactory;
+import de.d3adspace.phaedra.meta.FieldMeta;
+import java.util.Map;
 
 /**
  * @author Felix 'SasukeKawaii' Klauke
  */
-public class SimplePhaedra implements Phaedra {
+public class FieldMetaContainerFactory {
 	
-	private final CommandLineParser commandLineParser;
-	private Class<?> optionProvider;
+	private static final FieldMetaExtractor extractor = FieldMetaExtractorFactory
+		.createFieldMetaExtractor();
 	
-	SimplePhaedra() {
-		this.commandLineParser = CommandLineParserFactory.createCommandLineParser(this);
-	}
-	
-	public Object parse(String[] args) {
-		System.out.println("Parsing " + Arrays.toString(args));
+	public static FieldMetaContainer createFieldMetaContainer(SimplePhaedra phaedra,
+		Class<?> providerClazz) {
+		Map<String, FieldMeta> fieldMetaMap = extractor.getFieldMeta(phaedra, providerClazz);
 		
-		return this.commandLineParser.parse(args);
-	}
-	
-	public Class<?> getOptionProvider() {
-		return optionProvider;
-	}
-	
-	@Override
-	public void setOptionProvider(Class<?> optionProvider) {
-		this.optionProvider = optionProvider;
+		return new SimpleFieldMetaContainer(fieldMetaMap);
 	}
 }

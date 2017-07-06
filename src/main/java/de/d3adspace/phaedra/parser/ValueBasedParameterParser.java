@@ -19,36 +19,47 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.d3adspace.phaedra;
+package de.d3adspace.phaedra.parser;
 
-import de.d3adspace.phaedra.parser.CommandLineParser;
-import de.d3adspace.phaedra.parser.CommandLineParserFactory;
+import de.d3adspace.phaedra.exception.ArgumentException;
+import de.d3adspace.phaedra.meta.FieldMeta;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author Felix 'SasukeKawaii' Klauke
  */
-public class SimplePhaedra implements Phaedra {
-	
-	private final CommandLineParser commandLineParser;
-	private Class<?> optionProvider;
-	
-	SimplePhaedra() {
-		this.commandLineParser = CommandLineParserFactory.createCommandLineParser(this);
-	}
-	
-	public Object parse(String[] args) {
-		System.out.println("Parsing " + Arrays.toString(args));
-		
-		return this.commandLineParser.parse(args);
-	}
-	
-	public Class<?> getOptionProvider() {
-		return optionProvider;
-	}
+public class ValueBasedParameterParser implements ParameterParser {
 	
 	@Override
-	public void setOptionProvider(Class<?> optionProvider) {
-		this.optionProvider = optionProvider;
+	public void parseParameter(String[] args, int currentIndex, FieldMeta fieldMeta,
+		Object providerInstance) {
+		if (currentIndex == args.length - 1) {
+			throw new ArgumentException(
+				"Needing one more argument but i am at the end of the arguments.");
+		}
+		
+		String nextArgument = args[currentIndex + 1];
+		
+		if (nextArgument.startsWith("-")) {
+			throw new ArgumentException(
+				"I was searching for another argument value but I found a new key.");
+		}
+		
+		if (fieldMeta.getField().getType().isAssignableFrom(List.class)) {
+			String[] listElements = args[currentIndex + 1].split(",");
+			try {
+				fieldMeta.getField().set(providerInstance, Arrays.asList(listElements));
+			} catch (IllegalAccessException e) {
+				e.printStackTrace();
+			}
+			return;
+		}
+		
+		try {
+			fieldMeta.getField().set(providerInstance, args[currentIndex + 1]);
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		}
 	}
 }

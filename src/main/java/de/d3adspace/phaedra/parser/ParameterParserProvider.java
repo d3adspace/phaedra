@@ -19,36 +19,17 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.d3adspace.phaedra;
-
-import de.d3adspace.phaedra.parser.CommandLineParser;
-import de.d3adspace.phaedra.parser.CommandLineParserFactory;
-import java.util.Arrays;
+package de.d3adspace.phaedra.parser;
 
 /**
  * @author Felix 'SasukeKawaii' Klauke
  */
-public class SimplePhaedra implements Phaedra {
+public class ParameterParserProvider {
 	
-	private final CommandLineParser commandLineParser;
-	private Class<?> optionProvider;
+	private static final ParameterParser PARSER_VALUE = new ValueBasedParameterParser();
+	private static final ParameterParser PARSER_PRESENCE = new PresenceBasedParameterParser();
 	
-	SimplePhaedra() {
-		this.commandLineParser = CommandLineParserFactory.createCommandLineParser(this);
-	}
-	
-	public Object parse(String[] args) {
-		System.out.println("Parsing " + Arrays.toString(args));
-		
-		return this.commandLineParser.parse(args);
-	}
-	
-	public Class<?> getOptionProvider() {
-		return optionProvider;
-	}
-	
-	@Override
-	public void setOptionProvider(Class<?> optionProvider) {
-		this.optionProvider = optionProvider;
+	static ParameterParser getParameterParser(boolean needsValue) {
+		return needsValue ? PARSER_VALUE : PARSER_PRESENCE;
 	}
 }

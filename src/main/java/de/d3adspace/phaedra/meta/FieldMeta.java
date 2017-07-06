@@ -27,27 +27,11 @@ import java.lang.reflect.Field;
 /**
  * @author Felix 'SasukeKawaii' Klauke
  */
-public class FieldMeta {
+public interface FieldMeta {
 	
-	private final String optionKey;
-	private final Option option;
-	private final Field field;
+	String getOptionKey();
 	
-	public FieldMeta(String optionKey, Option option, Field field) {
-		this.optionKey = optionKey;
-		this.option = option;
-		this.field = field;
-	}
+	Field getField();
 	
-	public String getOptionKey() {
-		return optionKey;
-	}
-	
-	public Field getField() {
-		return field;
-	}
-	
-	public Option getOption() {
-		return option;
-	}
+	Option getOption();
 }

@@ -19,36 +19,28 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.d3adspace.phaedra;
+package de.d3adspace.phaedra.extractor;
 
-import de.d3adspace.phaedra.parser.CommandLineParser;
-import de.d3adspace.phaedra.parser.CommandLineParserFactory;
+import de.d3adspace.phaedra.SimplePhaedra;
+import de.d3adspace.phaedra.annotation.Option;
+import de.d3adspace.phaedra.meta.FieldMeta;
+import de.d3adspace.phaedra.meta.FieldMetaFactory;
 import java.util.Arrays;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author Felix 'SasukeKawaii' Klauke
  */
-public class SimplePhaedra implements Phaedra {
-	
-	private final CommandLineParser commandLineParser;
-	private Class<?> optionProvider;
-	
-	SimplePhaedra() {
-		this.commandLineParser = CommandLineParserFactory.createCommandLineParser(this);
-	}
-	
-	public Object parse(String[] args) {
-		System.out.println("Parsing " + Arrays.toString(args));
-		
-		return this.commandLineParser.parse(args);
-	}
-	
-	public Class<?> getOptionProvider() {
-		return optionProvider;
-	}
+public class SimpleFieldMetaExtractor implements FieldMetaExtractor {
 	
 	@Override
-	public void setOptionProvider(Class<?> optionProvider) {
-		this.optionProvider = optionProvider;
+	public Map<String, FieldMeta> getFieldMeta(SimplePhaedra phaedra, Class<?> providerClazz) {
+		Class<?> provider = phaedra.getOptionProvider();
+		
+		return Arrays.stream(provider.getDeclaredFields())
+			.filter(field -> field.isAnnotationPresent(Option.class))
+			.collect(Collectors.toMap(p -> "-" + p.getAnnotation(Option.class).key(),
+				FieldMetaFactory::createFieldMeta));
 	}
 }

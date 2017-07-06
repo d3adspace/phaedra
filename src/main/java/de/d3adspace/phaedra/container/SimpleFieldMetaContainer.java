@@ -19,36 +19,24 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.d3adspace.phaedra;
+package de.d3adspace.phaedra.container;
 
-import de.d3adspace.phaedra.parser.CommandLineParser;
-import de.d3adspace.phaedra.parser.CommandLineParserFactory;
-import java.util.Arrays;
+import de.d3adspace.phaedra.meta.FieldMeta;
+import java.util.Map;
 
 /**
  * @author Felix 'SasukeKawaii' Klauke
  */
-public class SimplePhaedra implements Phaedra {
+public class SimpleFieldMetaContainer implements FieldMetaContainer {
 	
-	private final CommandLineParser commandLineParser;
-	private Class<?> optionProvider;
+	private final Map<String, FieldMeta> optionFields;
 	
-	SimplePhaedra() {
-		this.commandLineParser = CommandLineParserFactory.createCommandLineParser(this);
-	}
-	
-	public Object parse(String[] args) {
-		System.out.println("Parsing " + Arrays.toString(args));
-		
-		return this.commandLineParser.parse(args);
-	}
-	
-	public Class<?> getOptionProvider() {
-		return optionProvider;
+	public SimpleFieldMetaContainer(Map<String, FieldMeta> optionFields) {
+		this.optionFields = optionFields;
 	}
 	
 	@Override
-	public void setOptionProvider(Class<?> optionProvider) {
-		this.optionProvider = optionProvider;
+	public FieldMeta getMeta(String parameterKey) {
+		return this.optionFields.get(parameterKey);
 	}
 }

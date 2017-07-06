@@ -19,36 +19,18 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package de.d3adspace.phaedra;
+package de.d3adspace.phaedra.meta;
 
-import de.d3adspace.phaedra.parser.CommandLineParser;
-import de.d3adspace.phaedra.parser.CommandLineParserFactory;
-import java.util.Arrays;
+import de.d3adspace.phaedra.annotation.Option;
+import java.lang.reflect.Field;
 
 /**
  * @author Felix 'SasukeKawaii' Klauke
  */
-public class SimplePhaedra implements Phaedra {
+public class FieldMetaFactory {
 	
-	private final CommandLineParser commandLineParser;
-	private Class<?> optionProvider;
-	
-	SimplePhaedra() {
-		this.commandLineParser = CommandLineParserFactory.createCommandLineParser(this);
-	}
-	
-	public Object parse(String[] args) {
-		System.out.println("Parsing " + Arrays.toString(args));
-		
-		return this.commandLineParser.parse(args);
-	}
-	
-	public Class<?> getOptionProvider() {
-		return optionProvider;
-	}
-	
-	@Override
-	public void setOptionProvider(Class<?> optionProvider) {
-		this.optionProvider = optionProvider;
+	public static FieldMeta createFieldMeta(Field field) {
+		return new SimpleFieldMeta(field.getAnnotation(Option.class).key(),
+			field.getAnnotation(Option.class), field);
 	}
 }
